@@ -1,38 +1,38 @@
 .data
-buffer: 			.space 20 	# Buffer para teclado
+buffer: 			    .space 20 	    # Buffer para teclado
 
 # Punteros de lista
-head_compra:  		.word 0  	# Puntero a cabeza
-tail_compra: 		.word 0   	# Puntero a cola
+head_compra:  		    .word 0  	    # Puntero a cabeza
+tail_compra: 		    .word 0   	    # Puntero a cola
 
 # Mensajes para imprimir
 prompt:         		.asciiz "> "
-newline:       		.asciiz "\n"
-error_msg:        	.asciiz "Error: Producto no encontrado\n"
-error_anular_msg:	.asciiz "Error: No se pueden anular mas productos (Lista vacia)\n"
-error_file_msg:		.asciiz "Error: No se pudo crear el archivo (Verifique permisos)\n"
-archivo_name_msg:	.asciiz "\nArchivo generado exitosamente:      "
+newline:       		    .asciiz "\n"
+error_msg:        	    .asciiz "Error: Producto no encontrado\n"
+error_anular_msg:	    .asciiz "Error: No se pueden anular mas productos (Lista vacia)\n"
+error_file_msg:		    .asciiz "Error: No se pudo crear el archivo (Verifique permisos)\n"
+archivo_name_msg:	    .asciiz "\nArchivo generado exitosamente:      "
 
 # Mensajes modificados para estetica
 total_msg:      		.asciiz "Total Compra:"
 dot:            		.asciiz "."
 mult_msg:       		.asciiz " [Cant: "
 eq_dollar:      		.asciiz "] = $"
-eq_neg_dollar:     	.asciiz "] = -$"
+eq_neg_dollar:     	    .asciiz "] = -$"
 void_msg:       		.asciiz "ANULADO: "
-dollar_msg:		.asciiz "$"
+dollar_msg:		        .asciiz "$"
 
 # Mensajes de cierre
 cierre_dia_msg:        	.asciiz "-------------------- CIERRE DEL DIA --------------------\n"
 stock_msg:      		.asciiz "] -- Stock: "
-total_cierre_msg:  	.asciiz "Total Cierre de Caja:"
+total_cierre_msg:  	    .asciiz "Total Cierre de Caja:"
 precio_msg:     		.asciiz " | Precio: $"
-archivo_inventario:	.asciiz "inventario_final.txt"
-espacio: 		.asciiz " "
+archivo_inventario:	    .asciiz "inventario_final.txt"
+espacio: 		        .asciiz " "
 
 # Corregido para evitar error de impresion (faltaba la z)
-inv_stock_msg:    	.asciiz "-- Stock: " 
-line:			.asciiz "--------------------------------------------------------\n"
+inv_stock_msg:    	    .asciiz "-- Stock: " 
+line:			        .asciiz "--------------------------------------------------------\n"
 
 # Importamos el inventario
 .align 5
@@ -72,9 +72,9 @@ main:
     
     # Comparadores de entrada
     beq  $t0, 42, maneja_multiplicacion	# Si es '*' (ASCII 42)
-    beq  $t0, 45, maneja_anulacion	# Si es '-' (ASCII 45)
-    beq  $t0, 43, manejo_total     	# Si es '+' (ASCII 43)
-    beq  $t0, 47, maneja_cierre_dia	# Si es '/' (ASCII 47)
+    beq  $t0, 45, maneja_anulacion	    # Si es '-' (ASCII 45)
+    beq  $t0, 43, manejo_total     	    # Si es '+' (ASCII 43)
+    beq  $t0, 47, maneja_cierre_dia	    # Si es '/' (ASCII 47)
     
     # Caso base
     j procesar_producto
@@ -85,9 +85,9 @@ procesar_producto:
     la   $a0, buffer
     
     # Salta y guarda retorno
-    jal atoi 				# El CPU salta a 'aoti'
+    jal atoi 				            # El CPU salta a 'aoti'
     
-    move $s1, $v0			# Resultado de atoi
+    move $s1, $v0			            # Resultado de atoi
     
     # Si input es 0 o basura, ignorar
     beq  $s1, $zero, main
@@ -105,7 +105,7 @@ bucle_busqueda:
     # Verificiacion de producto deseado
     beq  $s1, $t1, encontrado
     
-    addi $t0, $t0, 32 			# Aumenta el puntero
+    addi $t0, $t0, 32 			        # Aumenta el puntero
     
     # Si no es el producto deseado avanzamos al siguiente
     j bucle_busqueda
@@ -141,20 +141,20 @@ encontrado:
     beq  $t1, $zero, caso_vacia 		# Si es lista vacia
     
     # Caso 1. Lista no vacia
-    lw   $t2, tail_compra     		# Cargamos el ultimo elemento listado
-    sw   $s3, 8($t2)          		# El viejo apunta al nuevo
-    sw   $t2, 12($s3)         		# El nuevo apunta al viejo
-    sw   $zero, 8($s3)        		# El nuevo termina en NULL
-    sw   $s3, tail_compra     		# Actualizamos el tail
+    lw   $t2, tail_compra     		    # Cargamos el ultimo elemento listado
+    sw   $s3, 8($t2)          		    # El viejo apunta al nuevo
+    sw   $t2, 12($s3)         		    # El nuevo apunta al viejo
+    sw   $zero, 8($s3)        		    # El nuevo termina en NULL
+    sw   $s3, tail_compra     		    # Actualizamos el tail
     
     j imprimir_ticket_linea
 
 caso_vacia:
     # Caso 2. Lista vacia
-    sw   $s3, head_compra    		# Head apunta al nuevo
-    sw   $s3, tail_compra     		# Tail apunta al nuevo
-    sw   $zero, 8($s3)        		# Siguiente es NULL
-    sw   $zero, 12($s3)       		# Anterior es NULL
+    sw   $s3, head_compra    		    # Head apunta al nuevo
+    sw   $s3, tail_compra     		    # Tail apunta al nuevo
+    sw   $zero, 8($s3)        		    # Siguiente es NULL
+    sw   $zero, 12($s3)       		    # Anterior es NULL
     
     j imprimir_ticket_linea
 
@@ -216,7 +216,7 @@ print_cents_normal:
     la   $a0, newline
     syscall
 
-    j main				# Salto al inicio
+    j main				                # Salto al inicio
     
 # MANEJADORES DE COMANDOS (+, -, *, /)
 # --- Manejador de Multiplicacion (*) ---
@@ -301,7 +301,7 @@ maneja_multiplicacion:
     li   $v0, 4
     syscall
   
-    j main				# Salto al inicio
+    j main				                # Salto al inicio
   
 # --- Manejador de Anulacion (-) ---
 maneja_anulacion:
@@ -378,15 +378,15 @@ bucle_borrado:
     la   $a0, newline
     li   $v0, 4
     syscall
-    lw   $t5, 12($t0)     		# Cargar puntero anterior
+    lw   $t5, 12($t0)     		        # Cargar puntero anterior
     
-    beq  $t5, $zero, borrar_ultimo_nodo 	# Si anterior es NULL
+    beq  $t5, $zero, borrar_ultimo_nodo # Si anterior es NULL
     
     # Caso normal
-    sw   $zero, 8($t5)    		# Siguiente del anterior = NULL
-    sw   $t5, tail_compra 		# Tail = Anterior
+    sw   $zero, 8($t5)    		        # Siguiente del anterior = NULL
+    sw   $t5, tail_compra 		        # Tail = Anterior
     
-    addi $s4, $s4, -1    			# Restar 1 al contador
+    addi $s4, $s4, -1    			    # Restar 1 al contador
     j bucle_borrado
        
 borrar_ultimo_nodo:
@@ -406,11 +406,11 @@ fin_del_borrado_error:
     
 # --- Manejador de Total de Compra (+) ---
 manejo_total:
-    li   $s5, 0               		# Total acumulado en centavos
+    li   $s5, 0               		    # Total acumulado en centavos
     lw   $t0, head_compra
     li   $t6, 100
-    la   $s6, inventory_table 		# Puntero a la tabla de productos
-    la   $s7, ventas_dia      		# Puntero al libro de ventas
+    la   $s6, inventory_table 		    # Puntero a la tabla de productos
+    la   $s7, ventas_dia      		    # Puntero al libro de ventas
     
 bucle_total:
     # Condicion de salida (fin de la lista)
@@ -425,9 +425,9 @@ bucle_total:
     mul  $t3, $t3, $t6
     add  $t4, $t3, $t4
     
-    mul  $t4, $t4, $t2    		# Calcular subtotal de linea
-    add  $s5, $s5, $t4     		# Acumular el gran total
-    li   $t5, 0 				# Anotar en el libro de contabilidad
+    mul  $t4, $t4, $t2    		        # Calcular subtotal de linea
+    add  $s5, $s5, $t4     		        # Acumular el gran total
+    li   $t5, 0 				        # Anotar en el libro de contabilidad
     
 bucle_buscar_indice:
     # Verificacion de producto deseado
@@ -452,7 +452,7 @@ indice_encontrado:
     # Resstea el puntero de la tabla para la proxima iteracion
     la   $s6, inventory_table
     
-    lw   $t0, 8($t0)    			# Avanza al siguiente nodo
+    lw   $t0, 8($t0)    			    # Avanza al siguiente nodo
     
     j bucle_total
     
@@ -526,7 +526,7 @@ print_total_cents:
     sw   $zero, head_compra
     sw   $zero, tail_compra
 
-    j main				# Salto al inicio
+    j main				                # Salto al inicio
 
 # --- Manejador de Cierre del Dia (/) ---
 maneja_cierre_dia:
@@ -586,19 +586,19 @@ fin_ajuste_pad:
     li   $v0, 1
     syscall
 
-    li   $a0, 93        			# ASCII ']'
+    li   $a0, 93        			    # ASCII ']'
     li   $v0, 11
     syscall
     
     # Calcular padding hasta columna 30 
     move $s3, $zero 
     li   $t9, 30
-    li   $s3, 27        			# 19 (inicio) + 8 (txt)
+    li   $s3, 27        			    # 19 (inicio) + 8 (txt)
     
     move $a0, $t1
     jal  intlen
-    add  $s3, $s3, $v0  			# Sumar longitud numero
-    addi $s3, $s3, 1    			# Sumar longitud del corchete ']'
+    add  $s3, $s3, $v0  			    # Sumar longitud numero
+    addi $s3, $s3, 1    			    # Sumar longitud del corchete ']'
     
     sub  $a0, $t9, $s3
     jal  print_padding
@@ -661,7 +661,7 @@ fin_ajuste_pad:
     move $s4, $v0
     
     addi $s4, $s4, 2
-    addi $s4, $s4, 3  			# " $ ."
+    addi $s4, $s4, 3  			        # " $ ."
     
     li   $s3, 40 
     move $a0, $t2
@@ -821,13 +821,13 @@ fin_reinicio:
 # BIBLIOTECA DE UTILIDADES
 # --- ATOI (ASCII a entero) ---
 atoi:
-    li   $v0, 0              		# Inicializamos el total en 0
+    li   $v0, 0              		    # Inicializamos el total en 0
 
 atoi_loop:
-    lb   $t0, 0($a0)          		# Lee el caracter actual
+    lb   $t0, 0($a0)          		    # Lee el caracter actual
 
-    blt  $t0, 48, atoi_end   		# Si es menor que '0', terminar.
-    bgt  $t0, 57, atoi_end   		# Si es mayor que '9', terminar.
+    blt  $t0, 48, atoi_end   		    # Si es menor que '0', terminar.
+    bgt  $t0, 57, atoi_end   		    # Si es mayor que '9', terminar.
 
     sub  $t0, $t0, 48
     mul  $v0, $v0, 10
@@ -880,7 +880,7 @@ intlen_check:
     # Si es negativo
     bge  $t1, 0, intlen_loop
     neg  $t1, $t1
-    addi $v0, $v0, 1       	 	# Sumar 1 por el signo '-'
+    addi $v0, $v0, 1       	 	        # Sumar 1 por el signo '-'
 
 intlen_loop:
     beqz $t1, intlen_restore
@@ -904,11 +904,11 @@ int_to_ascii:
 
     move $t0, $a0
     la   $t1, buffer
-    move $v0, $zero     			# Contador de digitos
+    move $v0, $zero     			    # Contador de digitos
 
     # Si el numero es 0
     bnez $t0, itoa_loop
-    li   $t2, 48        			# '0'
+    li   $t2, 48        			    # '0'
     sb   $t2, 0($t1)
     li   $v0, 1
     j    itoa_end
@@ -917,7 +917,7 @@ itoa_loop:
     # Calcula el ultimo dígito = n % 10
     li   $t3, 10
     div  $t0, $t3
-    mfhi $t2            			# Digito
+    mfhi $t2            			    # Digito
 
     # Convierte a ASCII
     addi $t2, $t2, 48
@@ -926,7 +926,7 @@ itoa_loop:
     sb   $t2, 0($t1)
 
     addi $t1, $t1, 1
-    addi $v0, $v0, 1    			# Contador de digitos
+    addi $v0, $v0, 1    			    # Contador de digitos
 
     # n = n / 10
     mflo $t0
@@ -934,9 +934,9 @@ itoa_loop:
 
     # Ahora el número está al revés en buffer entonces lo invierte
     la   $t1, buffer
-    addi $t2, $t1, 0        		# Inicio
+    addi $t2, $t1, 0        		    # Inicio
     add  $t3, $t1, $v0
-    addi $t3, $t3, -1       		# Final
+    addi $t3, $t3, -1       		    # Final
 
 itoa_reverse_loop:
     bge  $t2, $t3, itoa_end
@@ -967,8 +967,8 @@ print_padding:
     sw   $a0, 4($sp)
 
     move $t0, $a0
-    li   $v0, 11        			# Syscall imprimir caracter
-    li   $a0, 32        			# ASCII espacio ' '
+    li   $v0, 11        			    # Syscall imprimir caracter
+    li   $a0, 32        			    # ASCII espacio ' '
     
 padding_loop:
     blez $t0, padding_end
@@ -989,22 +989,22 @@ padding_end:
 guardar_inventario_final:
     # Abrir archivo en modo escritura
     li   $v0, 13
-    la   $a0, archivo_inventario   	# Nombre
+    la   $a0, archivo_inventario   	    # Nombre
     li   $a1, 1
     li   $a2, 0
     syscall
 
     move $s0, $v0
-    bltz $s0, guardar_inv_fin		# Salir si hay error
+    bltz $s0, guardar_inv_fin		    # Salir si hay error
 
-    la   $s1, inventory_table		# Puntero a tabla
+    la   $s1, inventory_table		    # Puntero a tabla
 
 guardar_inv_loop:
-    lw   $t0, 0($s1)               	# Puntero a producto
-    beq  $t0, $zero, guardar_inv_cierre  	# Fin de la tabla
+    lw   $t0, 0($s1)               	    # Puntero a producto
+    beq  $t0, $zero, guardar_inv_cierre
 
     # Obtener puntero a nombre
-    addi $t1, $t0, 16              	# Nombre del producto
+    addi $t1, $t0, 16              	    # Nombre del producto
 
     # Calcular longitud del nombre
     move $t2, $t1
@@ -1016,27 +1016,27 @@ prod_len:
     j prod_len
 
 prod_len_ok:
-    subu $a2, $t2, $t1             	# Longitud del nombre
+    subu $a2, $t2, $t1             	    # Longitud del nombre
     move $a1, $t1
     move $a0, $s0
     li   $v0, 15
-    syscall                       	# Escribir nombre
+    syscall                       	    # Escribir nombre
     
     la $a1, espacio
     li $a2, 1
     move $a0, $s0
     li $v0, 15
-    syscall				# Agregar un espacio
+    syscall				                # Agregar un espacio
 
     # Escribir " -- Stock: "
-    la   $a1, inv_stock_msg       	# "-- Stock: "
+    la   $a1, inv_stock_msg       	    # "-- Stock: "
     li   $a2, 10
     move $a0, $s0
     li   $v0, 15
     syscall
 
     # Leer stock del producto
-    lw   $t4, 4($t0)               	# Stock
+    lw   $t4, 4($t0)               	    # Stock
 
     # Convertir entero a ASCII
     move $t5, $t4
